@@ -1,0 +1,1 @@
+# amazon-comprehend-medical-diagnosis-example-alexa-skill
