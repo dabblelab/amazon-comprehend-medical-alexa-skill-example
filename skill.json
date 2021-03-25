@@ -3,23 +3,23 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "uri": "arn:aws:lambda:us-east-1:325775800922:function:ae04776a-98cf-4ba0-a38a-4949ef866584:Release_0"
+          "uri": "arn:aws:lambda:us-east-1:325775800922:function:d8436d5f-a114-4983-a123-f6b1005e8da0:Release_0"
         },
         "interfaces": [],
         "regions": {
           "NA": {
             "endpoint": {
-              "uri": "arn:aws:lambda:us-east-1:325775800922:function:ae04776a-98cf-4ba0-a38a-4949ef866584:Release_0"
+              "uri": "arn:aws:lambda:us-east-1:325775800922:function:d8436d5f-a114-4983-a123-f6b1005e8da0:Release_0"
             }
           },
           "EU": {
             "endpoint": {
-              "uri": "arn:aws:lambda:eu-west-1:325775800922:function:ae04776a-98cf-4ba0-a38a-4949ef866584:Release_0"
+              "uri": "arn:aws:lambda:eu-west-1:325775800922:function:d8436d5f-a114-4983-a123-f6b1005e8da0:Release_0"
             }
           },
           "FE": {
             "endpoint": {
-              "uri": "arn:aws:lambda:us-west-2:325775800922:function:ae04776a-98cf-4ba0-a38a-4949ef866584:Release_0"
+              "uri": "arn:aws:lambda:us-west-2:325775800922:function:d8436d5f-a114-4983-a123-f6b1005e8da0:Release_0"
             }
           }
         }
@@ -39,7 +39,7 @@
             "help"
           ],
           "keywords": [],
-          "name": "comprehend demo",
+          "name": "medical diagnosis",
           "summary": "Sample Short Description"
         }
       },

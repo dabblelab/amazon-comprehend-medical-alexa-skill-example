@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "comprehend demo",
+      "invocationName": "medical diagnosis ",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -24,35 +24,23 @@
           "samples": []
         },
         {
-          "name": "SentimentIntent",
+          "name": "MedicalIntent",
           "slots": [
             {
-              "name": "statement",
+              "name": "report",
               "type": "AMAZON.SearchQuery"
             }
           ],
           "samples": [
-            "alexa {statement}",
-            "{statement} alexa",
-            "fine {statement}",
-            "ok {statement}",
-            "would {statement}",
-            "will {statement}",
-            "is {statement}",
-            "still {statement}",
-            "yes {statement}",
-            "no {statement}",
-            "because {statement}",
-            "since {statement}",
-            "but {statement}",
-            "what {statement}",
-            "i",
-            "i {statement}"
+            "Mrs {report}",
+            "I {report}",
+            "Ms {report}",
+            "Mr {report}"
           ]
         }
       ],
       "types": []
     }
   },
-  "version": "6"
+  "version": "2"
 }

@@ -1,19 +1,23 @@
+/* *
+ * This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK (v2).
+ * Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
+ * session persistence, api calls, and more.
+ * */
 const Alexa = require('ask-sdk-core');
 const AWS = require("aws-sdk");
 AWS.config.loadFromPath('./config.json');
 
-const comprehend = new AWS.Comprehend({
-  apiVersion: '2017-11-27',
-});
+const comprehendmedical = new AWS.ComprehendMedical({
+  comprehendmedical: '2018-10-30'
+})
 
-//To get started make sure to input your AWS creds in the config.json file
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = `Welcome, Let's analyze your sentiment today! Go on, tell us something`;
+        const speakOutput = 'Welcome, Tell me your medical condition.';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -21,49 +25,36 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
-function getSentimentAnalysis(sentence){
-    return new Promise(function(resolve,reject){
-        
-    try{
-            comprehend.detectSentiment({
-                LanguageCode: 'en' ,
-                Text: sentence
-            }, 
-            function(err, data)
-            {
-                if (err){
-                    console.log(err, err.stack); // an error occurred
-                    
-                    
-                }
-                else
-                {
-                    console.log(data); // successful response
-                    resolve(data.Sentiment)
-                }
-            });
-        }
-        catch(e){
-            console.log(e)
-            reject("Issue")
-        }    
-    })
+
+async function getMedicalAnalysis(medical) {
+  var params = {
+    Text: medical
+  };
+  var data = await comprehendmedical.detectEntitiesV2(params).promise();
+  var diseases = [];
+  console.log(data);
+  for (let entity of data["Entities"]) {
+    if (entity["Category"] === "MEDICAL_CONDITION") {
+      diseases.push(entity["Text"]);
+    } 
+  }
+  return (diseases.join(", "));
 }
 
-const SentimentIntentHandler = {
+const MedicalIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'SentimentIntent';
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'MedicalIntent';
     },
     async handle(handlerInput) {
-        const sentence = Alexa.getSlotValue(handlerInput.requestEnvelope, 'statement')
+        const medical = Alexa.getSlotValue(handlerInput.requestEnvelope, 'report')
             let speakOutput = '';
             let userSentiment = "default";
         
         
-        speakOutput = await getSentimentAnalysis(sentence)
-        return handlerInput.responseBuilder
-        .speak("That's "+speakOutput)
+        speakOutput = await getMedicalAnalysis(medical)
+        return await handlerInput.responseBuilder
+        .speak("Identified diseases are "+speakOutput)
         .reprompt("That's "+speakOutput)
         .getResponse();
     }
@@ -98,7 +89,11 @@ const CancelAndStopIntentHandler = {
             .getResponse();
     }
 };
-
+/* *
+ * FallbackIntent triggers when a customer says something that doesn’t map to any intents in your skill
+ * It must also be defined in the language model (if the locale supports it)
+ * This handler can be safely added but will be ingnored in locales that do not support it yet 
+ * */
 const FallbackIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -113,7 +108,11 @@ const FallbackIntentHandler = {
             .getResponse();
     }
 };
-
+/* *
+ * SessionEndedRequest notifies that a session was ended. This handler will be triggered when a currently open 
+ * session is closed for one of the following reasons: 1) The user says "exit" or "quit". 2) The user does not 
+ * respond or says something that does not match an intent defined in your voice model. 3) An error occurs 
+ * */
 const SessionEndedRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
@@ -124,7 +123,11 @@ const SessionEndedRequestHandler = {
         return handlerInput.responseBuilder.getResponse(); // notice we send an empty response
     }
 };
-
+/* *
+ * The intent reflector is used for interaction model testing and debugging.
+ * It will simply repeat the intent the user said. You can create custom handlers for your intents 
+ * by defining them above, then also adding them to the request handler chain below 
+ * */
 const IntentReflectorHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
@@ -139,7 +142,11 @@ const IntentReflectorHandler = {
             .getResponse();
     }
 };
-
+/**
+ * Generic error handling to capture any syntax or routing errors. If you receive an error
+ * stating the request handler chain is not found, you have not implemented a handler for
+ * the intent being invoked or included it in the skill builder below 
+ * */
 const ErrorHandler = {
     canHandle() {
         return true;
@@ -155,10 +162,15 @@ const ErrorHandler = {
     }
 };
 
+/**
+ * This handler acts as the entry point for your skill, routing all request and response
+ * payloads to the handlers above. Make sure any new handlers or interceptors you've
+ * defined are included below. The order matters - they're processed top to bottom 
+ * */
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
-        SentimentIntentHandler,
+        MedicalIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         FallbackIntentHandler,
