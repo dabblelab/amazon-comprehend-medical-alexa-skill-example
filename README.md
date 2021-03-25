@@ -1,1 +1,2 @@
-# amazon-comprehend-medical-diagnosis-example-alexa-skill
+# amazon-comprehend-alexa-skill-example
+This Alexa skill template uses the Amazon Comprehend Detect Sentiment method to analyse user's sentiments.
